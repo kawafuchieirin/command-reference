@@ -1,0 +1,17 @@
+[
+  {
+    "name": "ls",
+    "description": "ディレクトリの内容を一覧表示します。",
+    "usage": "ls [オプション] [ファイル]"
+  },
+  {
+    "name": "cd",
+    "description": "カレントディレクトリを変更します。",
+    "usage": "cd ディレクトリ"
+  },
+  {
+    "name": "pwd",
+    "description": "現在の作業ディレクトリを表示します。",
+    "usage": "pwd"
+  }
+]
