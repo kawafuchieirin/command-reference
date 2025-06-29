@@ -5,71 +5,158 @@ import json
 with open("commands.json", encoding="utf-8") as f:
     commands = json.load(f)
 
-st.title("🛠️ コマンドリファレンス")
+# セッションステートの初期化
+if "builder_command" not in st.session_state:
+    st.session_state["builder_command"] = None
+if "current_page" not in st.session_state:
+    st.session_state["current_page"] = "リファレンス"
 
-# 大カテゴリを抽出（重複なし、ソート済み）
-main_categories = sorted(set(cmd["main_category"] for cmd in commands))
+# サイドバーでページ選択
+st.sidebar.title("📚 ナビゲーション")
+page = st.sidebar.radio(
+    "ページを選択",
+    ["リファレンス", "コマンドビルダー"],
+    index=0 if st.session_state["current_page"] == "リファレンス" else 1
+)
 
-# 大カテゴリ選択
-selected_main_category = st.selectbox("🏢 大カテゴリを選択", main_categories)
+# ページが変更されたら記録
+if page != st.session_state["current_page"]:
+    st.session_state["current_page"] = page
 
-# 選択された大カテゴリのサブカテゴリを抽出
-sub_categories = sorted(set(cmd["sub_category"] for cmd in commands if cmd["main_category"] == selected_main_category))
-
-# サブカテゴリ選択
-selected_sub_category = st.selectbox("📁 サブカテゴリを選択", sub_categories)
-
-# 選択されたカテゴリのコマンドをフィルタリング
-filtered_commands = [cmd for cmd in commands 
-                    if cmd["main_category"] == selected_main_category 
-                    and cmd["sub_category"] == selected_sub_category]
-command_names = [cmd["name"] for cmd in filtered_commands]
-
-# コマンド選択
-if command_names:
-    selected_command = st.selectbox("🔧 コマンドを選択", command_names)
+def show_reference_page():
+    """コマンドリファレンスページを表示"""
+    st.title("🛠️ コマンドリファレンス")
     
-    # 選択されたコマンドの詳細を取得
-    cmd = next(c for c in filtered_commands if c["name"] == selected_command)
+    # 大カテゴリを抽出（重複なし、ソート済み）
+    main_categories = sorted(set(cmd["main_category"] for cmd in commands))
     
-    st.subheader("📄 説明")
-    st.write(cmd["description"])
+    # 大カテゴリ選択
+    selected_main_category = st.selectbox("🏢 大カテゴリを選択", main_categories)
     
-    st.subheader("💻 使用例")
-    st.code(cmd["usage"], language="bash")
-else:
-    st.info("このカテゴリにはコマンドがありません。")
-
-# コマンドビルダーセクション
-st.markdown("---")
-st.title("🛠️ コマンドビルダー")
-
-# ビルダー対応コマンドのみフィルタリング
-builder_commands = [cmd for cmd in commands if "builder" in cmd]
-builder_main_categories = sorted(set(cmd["main_category"] for cmd in builder_commands))
-
-if builder_commands:
-    # 大カテゴリ選択（ビルダー用）
-    builder_main_category = st.selectbox("🏢 ビルダー対応大カテゴリを選択", builder_main_categories, key="builder_main_category")
+    # 選択された大カテゴリのサブカテゴリを抽出
+    sub_categories = sorted(set(cmd["sub_category"] for cmd in commands if cmd["main_category"] == selected_main_category))
     
-    # サブカテゴリを抽出（ビルダー用）
-    builder_sub_categories = sorted(set(cmd["sub_category"] for cmd in builder_commands if cmd["main_category"] == builder_main_category))
+    # サブカテゴリ選択
+    selected_sub_category = st.selectbox("📁 サブカテゴリを選択", sub_categories)
     
-    # サブカテゴリ選択（ビルダー用）
-    builder_sub_category = st.selectbox("📁 ビルダー対応サブカテゴリを選択", builder_sub_categories, key="builder_sub_category")
+    # 選択されたカテゴリのコマンドをフィルタリング
+    filtered_commands = [cmd for cmd in commands 
+                        if cmd["main_category"] == selected_main_category 
+                        and cmd["sub_category"] == selected_sub_category]
+    command_names = [cmd["name"] for cmd in filtered_commands]
     
-    # 選択されたカテゴリのビルダー対応コマンドをフィルタリング
-    filtered_builder_commands = [cmd for cmd in builder_commands 
-                                if cmd["main_category"] == builder_main_category 
-                                and cmd["sub_category"] == builder_sub_category]
-    builder_command_names = [cmd["name"] for cmd in filtered_builder_commands]
-    
-    if builder_command_names:
-        # コマンド選択（ビルダー用）
-        selected_builder_command = st.selectbox("🔧 ビルダー対応コマンドを選択", builder_command_names, key="builder_command")
+    # コマンド選択
+    if command_names:
+        selected_command = st.selectbox("🔧 コマンドを選択", command_names)
         
         # 選択されたコマンドの詳細を取得
-        builder_cmd = next(c for c in filtered_builder_commands if c["name"] == selected_builder_command)
+        cmd = next(c for c in filtered_commands if c["name"] == selected_command)
+        
+        st.subheader("📄 説明")
+        st.write(cmd["description"])
+        
+        st.subheader("💻 使用例")
+        st.code(cmd["usage"], language="bash")
+        
+        # ビルダー対応コマンドの場合、ビルダーへの遷移ボタンを表示
+        if "builder" in cmd:
+            st.markdown("---")
+            if st.button("🔧 このコマンドをビルダーで編集", type="primary"):
+                # セッションステートにコマンド情報を保存
+                st.session_state["builder_command"] = {
+                    "main_category": cmd["main_category"],
+                    "sub_category": cmd["sub_category"],
+                    "name": cmd["name"]
+                }
+                # ビルダーページへ遷移
+                st.session_state["current_page"] = "コマンドビルダー"
+                st.rerun()
+    else:
+        st.info("このカテゴリにはコマンドがありません。")
+
+def show_builder_page():
+    """コマンドビルダーページを表示"""
+    st.title("🛠️ コマンドビルダー")
+    
+    # ビルダー対応コマンドのみフィルタリング
+    builder_commands = [cmd for cmd in commands if "builder" in cmd]
+    builder_main_categories = sorted(set(cmd["main_category"] for cmd in builder_commands))
+    
+    if not builder_commands:
+        st.info("現在、コマンドビルダーに対応したコマンドはありません。")
+        return
+    
+    # セッションステートから引き継いだコマンド情報を確認
+    preset_command = st.session_state.get("builder_command")
+    
+    if preset_command:
+        # リファレンスから引き継いだ情報がある場合
+        st.info(f"📌 リファレンスから選択されたコマンド: {preset_command['name']}")
+        
+        # 引き継いだ情報をデフォルト値として設定
+        default_main_idx = builder_main_categories.index(preset_command["main_category"]) if preset_command["main_category"] in builder_main_categories else 0
+        builder_main_category = st.selectbox(
+            "🏢 ビルダー対応大カテゴリを選択", 
+            builder_main_categories, 
+            index=default_main_idx,
+            key="builder_main_category"
+        )
+        
+        # サブカテゴリを抽出
+        builder_sub_categories = sorted(set(cmd["sub_category"] for cmd in builder_commands if cmd["main_category"] == builder_main_category))
+        default_sub_idx = builder_sub_categories.index(preset_command["sub_category"]) if preset_command["sub_category"] in builder_sub_categories else 0
+        builder_sub_category = st.selectbox(
+            "📁 ビルダー対応サブカテゴリを選択", 
+            builder_sub_categories,
+            index=default_sub_idx,
+            key="builder_sub_category"
+        )
+        
+        # コマンドリストを取得
+        filtered_builder_commands = [cmd for cmd in builder_commands 
+                                    if cmd["main_category"] == builder_main_category 
+                                    and cmd["sub_category"] == builder_sub_category]
+        builder_command_names = [cmd["name"] for cmd in filtered_builder_commands]
+        
+        if builder_command_names:
+            default_cmd_idx = builder_command_names.index(preset_command["name"]) if preset_command["name"] in builder_command_names else 0
+            selected_builder_command = st.selectbox(
+                "🔧 ビルダー対応コマンドを選択", 
+                builder_command_names,
+                index=default_cmd_idx,
+                key="builder_command"
+            )
+        else:
+            selected_builder_command = None
+        
+        # 使用後はセッションステートをクリア
+        if st.button("🔄 選択をリセット"):
+            st.session_state["builder_command"] = None
+            st.rerun()
+    else:
+        # 通常の選択UI
+        builder_main_category = st.selectbox("🏢 ビルダー対応大カテゴリを選択", builder_main_categories, key="builder_main_category")
+        
+        # サブカテゴリを抽出
+        builder_sub_categories = sorted(set(cmd["sub_category"] for cmd in builder_commands if cmd["main_category"] == builder_main_category))
+        builder_sub_category = st.selectbox("📁 ビルダー対応サブカテゴリを選択", builder_sub_categories, key="builder_sub_category")
+        
+        # 選択されたカテゴリのビルダー対応コマンドをフィルタリング
+        filtered_builder_commands = [cmd for cmd in builder_commands 
+                                    if cmd["main_category"] == builder_main_category 
+                                    and cmd["sub_category"] == builder_sub_category]
+        builder_command_names = [cmd["name"] for cmd in filtered_builder_commands]
+        
+        if builder_command_names:
+            selected_builder_command = st.selectbox("🔧 ビルダー対応コマンドを選択", builder_command_names, key="builder_command")
+        else:
+            selected_builder_command = None
+            st.info("このカテゴリにはビルダー対応コマンドがありません。")
+    
+    # コマンドが選択されている場合、ビルダーUIを表示
+    if selected_builder_command:
+        # 選択されたコマンドの詳細を取得
+        builder_cmd = next(c for c in builder_commands if c["name"] == selected_builder_command)
         
         st.info(f"📝 {builder_cmd['description']}")
         
@@ -166,7 +253,11 @@ if builder_commands:
             # 使用例
             if final_command.strip() and final_command != selected_builder_command:
                 st.success("✅ コマンドが生成されました！上記のコマンドをコピーして使用してください。")
-    else:
-        st.info("このカテゴリにはビルダー対応コマンドがありません。")
+    elif not preset_command:
+        st.info("📌 リファレンスから選択するか、上記のドロップダウンからコマンドを選択してください。")
+
+# ページのルーティング
+if page == "リファレンス":
+    show_reference_page()
 else:
-    st.info("現在、コマンドビルダーに対応したコマンドはありません。")
+    show_builder_page()
