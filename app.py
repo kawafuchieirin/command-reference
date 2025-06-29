@@ -1,9 +1,21 @@
 import streamlit as st
 import json
+import traceback
+import sys
 
-# JSONファイル読み込み
-with open("commands.json", encoding="utf-8") as f:
-    commands = json.load(f)
+# エラーハンドリングを追加したJSONファイル読み込み
+try:
+    with open("commands.json", encoding="utf-8") as f:
+        commands = json.load(f)
+except FileNotFoundError:
+    st.error("⚠️ commands.jsonファイルが見つかりません。ファイルが正しい場所にあるか確認してください。")
+    st.stop()
+except json.JSONDecodeError as e:
+    st.error(f"⚠️ commands.jsonの解析エラー: {e}")
+    st.stop()
+except Exception as e:
+    st.error(f"⚠️ 予期しないエラーが発生しました: {e}")
+    st.stop()
 
 # セッションステートの初期化
 if "builder_command" not in st.session_state:
@@ -25,7 +37,8 @@ if page != st.session_state["current_page"]:
 
 def show_reference_page():
     """コマンドリファレンスページを表示"""
-    st.title("🛠️ コマンドリファレンス")
+    try:
+        st.title("🛠️ コマンドリファレンス")
     
     # 大カテゴリを抽出（重複なし、ソート済み）
     main_categories = sorted(set(cmd["main_category"] for cmd in commands))
@@ -73,10 +86,15 @@ def show_reference_page():
                 st.rerun()
     else:
         st.info("このカテゴリにはコマンドがありません。")
+    except Exception as e:
+        st.error(f"⚠️ ページ表示中にエラーが発生しました: {e}")
+        st.error(f"詳細: {traceback.format_exc()}")
+        st.info("💡 ページをリロードしてください。問題が解決しない場合は、ターミナルでStreamlitを再起動してください。")
 
 def show_builder_page():
     """コマンドビルダーページを表示"""
-    st.title("🛠️ コマンドビルダー")
+    try:
+        st.title("🛠️ コマンドビルダー")
     
     # ビルダー対応コマンドのみフィルタリング
     builder_commands = [cmd for cmd in commands if "builder" in cmd]
@@ -255,9 +273,23 @@ def show_builder_page():
                 st.success("✅ コマンドが生成されました！上記のコマンドをコピーして使用してください。")
     elif not preset_command:
         st.info("📌 リファレンスから選択するか、上記のドロップダウンからコマンドを選択してください。")
+    except Exception as e:
+        st.error(f"⚠️ ビルダーページ表示中にエラーが発生しました: {e}")
+        st.error(f"詳細: {traceback.format_exc()}")
+        st.info("💡 ページをリロードしてください。問題が解決しない場合は、ターミナルでStreamlitを再起動してください。")
 
 # ページのルーティング
-if page == "リファレンス":
-    show_reference_page()
-else:
-    show_builder_page()
+try:
+    if page == "リファレンス":
+        show_reference_page()
+    else:
+        show_builder_page()
+except Exception as e:
+    st.error(f"⚠️ アプリケーションエラーが発生しました: {e}")
+    st.error(f"詳細: {traceback.format_exc()}")
+    st.info("💡 以下の方法で問題を解決してください:")
+    st.markdown("""
+    1. **ブラウザをリロード**: `F5`キーまたは`Ctrl+R`（Mac: `Cmd+R`）
+    2. **Streamlitを再起動**: ターミナルで`Ctrl+C`で停止後、再度`streamlit run app.py`を実行
+    3. **自動再起動の有効化**: `streamlit run app.py --server.runOnSave true`
+    """)

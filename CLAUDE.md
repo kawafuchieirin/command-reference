@@ -165,3 +165,97 @@ A: `commands.json`ファイルがUTF-8エンコーディングで保存されて
 - `commands.json`を編集する際は、必ず有効なJSON形式を維持してください
 - 本番環境で使用する場合は、適切なセキュリティ対策を実施してください
 - 大量のコマンドを追加する場合は、パフォーマンスに注意してください
+
+## 🚨 Streamlit Connection Error 対策
+
+### よくあるエラーと解決方法
+
+**Q: 「Connection error - Is Streamlit still running?」というエラーが表示される場合は？**
+
+このエラーは以下の原因で発生することがあります：
+
+#### 1. Streamlitサーバーが停止している
+**原因**: ターミナルで`Ctrl+C`を押してStreamlitを停止した、またはターミナルを閉じた
+**解決方法**: 
+```bash
+streamlit run app.py
+```
+
+#### 2. Pythonスクリプトの例外でStreamlitがクラッシュ
+**原因**: コードにバグがあり、例外が発生してStreamlitが停止
+**解決方法**: 
+- ターミナルでエラーログを確認
+- app.pyにエラーハンドリングを実装済み（例外発生時も継続動作）
+- 以下のコマンドで自動再起動を有効化：
+```bash
+streamlit run app.py --server.runOnSave true
+```
+
+#### 3. ネットワーク接続の問題
+**原因**: Wi-Fi切断、VPN切断、プロキシ設定の変更など
+**解決方法**: 
+- ネットワーク接続を確認
+- ブラウザを更新（`F5`キー）
+- 必要に応じてStreamlitを再起動
+
+#### 4. PCスリープ・休止状態からの復帰
+**原因**: PCがスリープ状態になるとStreamlitサーバーとの接続が切れる
+**解決方法**: 
+- ブラウザをリロード（`F5`キー）
+- それでも接続できない場合はStreamlitを再起動
+
+### 推奨される開発環境設定
+
+#### 1. 自動再起動の有効化
+ファイル保存時に自動的にStreamlitを再起動する設定：
+```bash
+streamlit run app.py --server.runOnSave true
+```
+
+#### 2. ポート指定での起動
+特定のポートで起動（複数のStreamlitアプリを同時実行する場合）：
+```bash
+streamlit run app.py --server.port 8502
+```
+
+#### 3. デバッグモードの有効化
+詳細なエラー情報を表示：
+```bash
+streamlit run app.py --logger.level debug
+```
+
+#### 4. 設定ファイルの作成
+`.streamlit/config.toml`ファイルを作成して恒久的な設定を行う：
+```toml
+[server]
+runOnSave = true
+port = 8501
+
+[browser]
+gatherUsageStats = false
+
+[logger]
+level = "info"
+```
+
+### トラブルシューティングチェックリスト
+
+1. **ターミナルを確認**
+   - [ ] Streamlitが実行中か確認
+   - [ ] エラーメッセージやTraceback情報を確認
+   - [ ] 必要に応じて`pip install streamlit`で最新版にアップデート
+
+2. **ブラウザを確認**
+   - [ ] ブラウザのキャッシュをクリア（`Ctrl+Shift+Delete`）
+   - [ ] 別のブラウザで試す
+   - [ ] プライベート/シークレットモードで試す
+
+3. **ファイルを確認**
+   - [ ] `commands.json`が正しいJSON形式か確認
+   - [ ] app.pyに構文エラーがないか確認
+   - [ ] 必要なファイルがすべて存在するか確認
+
+4. **環境を確認**
+   - [ ] Python仮想環境が有効化されているか確認
+   - [ ] 必要なパッケージがインストールされているか確認
+   - [ ] ファイアウォールやセキュリティソフトの設定を確認
