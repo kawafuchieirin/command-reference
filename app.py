@@ -7,10 +7,21 @@ with open("commands.json", encoding="utf-8") as f:
 
 st.title("🛠️ コマンドリファレンス")
 
-command_names = [cmd["name"] for cmd in commands]
-selected = st.selectbox("コマンドを選んでください", command_names)
+# カテゴリを抽出（重複なし、ソート済み）
+categories = sorted(set(cmd["category"] for cmd in commands))
 
-cmd = next(c for c in commands if c["name"] == selected)
+# カテゴリ選択
+selected_category = st.selectbox("📁 カテゴリを選択", categories)
+
+# 選択されたカテゴリのコマンドをフィルタリング
+filtered_commands = [cmd for cmd in commands if cmd["category"] == selected_category]
+command_names = [cmd["name"] for cmd in filtered_commands]
+
+# コマンド選択
+selected_command = st.selectbox("🔧 コマンドを選択", command_names)
+
+# 選択されたコマンドの詳細を取得
+cmd = next(c for c in filtered_commands if c["name"] == selected_command)
 
 st.subheader("📄 説明")
 st.write(cmd["description"])
