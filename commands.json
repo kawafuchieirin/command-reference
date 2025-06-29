@@ -13,5 +13,285 @@
     "name": "pwd",
     "description": "現在の作業ディレクトリを表示します。",
     "usage": "pwd"
+  },
+  {
+    "name": "aws configure",
+    "description": "AWS CLIの認証情報とデフォルト設定を構成します。",
+    "usage": "aws configure [--profile プロファイル名]"
+  },
+  {
+    "name": "aws s3 ls",
+    "description": "S3バケットまたはオブジェクトを一覧表示します。",
+    "usage": "aws s3 ls [s3://バケット名/パス]"
+  },
+  {
+    "name": "aws s3 cp",
+    "description": "ファイルをS3にコピーまたはS3からコピーします。",
+    "usage": "aws s3 cp ソース 宛先 [--recursive]"
+  },
+  {
+    "name": "aws s3 sync",
+    "description": "ディレクトリとS3バケットを同期します。",
+    "usage": "aws s3 sync ソース 宛先 [--delete]"
+  },
+  {
+    "name": "aws s3 rm",
+    "description": "S3オブジェクトを削除します。",
+    "usage": "aws s3 rm s3://バケット名/オブジェクト [--recursive]"
+  },
+  {
+    "name": "aws s3 mb",
+    "description": "S3バケットを作成します。",
+    "usage": "aws s3 mb s3://バケット名"
+  },
+  {
+    "name": "aws s3 rb",
+    "description": "S3バケットを削除します。",
+    "usage": "aws s3 rb s3://バケット名 [--force]"
+  },
+  {
+    "name": "aws ec2 describe-instances",
+    "description": "EC2インスタンスの情報を表示します。",
+    "usage": "aws ec2 describe-instances [--instance-ids i-xxxxx]"
+  },
+  {
+    "name": "aws ec2 start-instances",
+    "description": "停止中のEC2インスタンスを起動します。",
+    "usage": "aws ec2 start-instances --instance-ids i-xxxxx"
+  },
+  {
+    "name": "aws ec2 stop-instances",
+    "description": "実行中のEC2インスタンスを停止します。",
+    "usage": "aws ec2 stop-instances --instance-ids i-xxxxx"
+  },
+  {
+    "name": "aws ec2 reboot-instances",
+    "description": "EC2インスタンスを再起動します。",
+    "usage": "aws ec2 reboot-instances --instance-ids i-xxxxx"
+  },
+  {
+    "name": "aws ec2 terminate-instances",
+    "description": "EC2インスタンスを終了（削除）します。",
+    "usage": "aws ec2 terminate-instances --instance-ids i-xxxxx"
+  },
+  {
+    "name": "aws ec2 describe-images",
+    "description": "利用可能なAMIを表示します。",
+    "usage": "aws ec2 describe-images --owners self amazon"
+  },
+  {
+    "name": "aws ec2 describe-security-groups",
+    "description": "セキュリティグループの情報を表示します。",
+    "usage": "aws ec2 describe-security-groups [--group-ids sg-xxxxx]"
+  },
+  {
+    "name": "aws ec2 describe-vpcs",
+    "description": "VPCの情報を表示します。",
+    "usage": "aws ec2 describe-vpcs [--vpc-ids vpc-xxxxx]"
+  },
+  {
+    "name": "aws ec2 describe-subnets",
+    "description": "サブネットの情報を表示します。",
+    "usage": "aws ec2 describe-subnets [--subnet-ids subnet-xxxxx]"
+  },
+  {
+    "name": "aws lambda list-functions",
+    "description": "Lambda関数の一覧を表示します。",
+    "usage": "aws lambda list-functions [--region リージョン]"
+  },
+  {
+    "name": "aws lambda invoke",
+    "description": "Lambda関数を実行します。",
+    "usage": "aws lambda invoke --function-name 関数名 出力ファイル"
+  },
+  {
+    "name": "aws lambda create-function",
+    "description": "新しいLambda関数を作成します。",
+    "usage": "aws lambda create-function --function-name 名前 --runtime ランタイム --role ARN --handler ハンドラ --zip-file fileb://ファイル.zip"
+  },
+  {
+    "name": "aws lambda update-function-code",
+    "description": "Lambda関数のコードを更新します。",
+    "usage": "aws lambda update-function-code --function-name 関数名 --zip-file fileb://ファイル.zip"
+  },
+  {
+    "name": "aws lambda delete-function",
+    "description": "Lambda関数を削除します。",
+    "usage": "aws lambda delete-function --function-name 関数名"
+  },
+  {
+    "name": "aws iam list-users",
+    "description": "IAMユーザーの一覧を表示します。",
+    "usage": "aws iam list-users"
+  },
+  {
+    "name": "aws iam create-user",
+    "description": "新しいIAMユーザーを作成します。",
+    "usage": "aws iam create-user --user-name ユーザー名"
+  },
+  {
+    "name": "aws iam delete-user",
+    "description": "IAMユーザーを削除します。",
+    "usage": "aws iam delete-user --user-name ユーザー名"
+  },
+  {
+    "name": "aws iam list-roles",
+    "description": "IAMロールの一覧を表示します。",
+    "usage": "aws iam list-roles"
+  },
+  {
+    "name": "aws iam attach-user-policy",
+    "description": "ユーザーにポリシーをアタッチします。",
+    "usage": "aws iam attach-user-policy --user-name ユーザー名 --policy-arn ポリシーARN"
+  },
+  {
+    "name": "aws rds describe-db-instances",
+    "description": "RDSインスタンスの情報を表示します。",
+    "usage": "aws rds describe-db-instances [--db-instance-identifier ID]"
+  },
+  {
+    "name": "aws rds create-db-instance",
+    "description": "新しいRDSインスタンスを作成します。",
+    "usage": "aws rds create-db-instance --db-instance-identifier ID --db-instance-class クラス --engine エンジン --master-username ユーザー --master-user-password パスワード"
+  },
+  {
+    "name": "aws rds delete-db-instance",
+    "description": "RDSインスタンスを削除します。",
+    "usage": "aws rds delete-db-instance --db-instance-identifier ID --skip-final-snapshot"
+  },
+  {
+    "name": "aws cloudformation list-stacks",
+    "description": "CloudFormationスタックの一覧を表示します。",
+    "usage": "aws cloudformation list-stacks [--stack-status-filter CREATE_COMPLETE]"
+  },
+  {
+    "name": "aws cloudformation create-stack",
+    "description": "新しいCloudFormationスタックを作成します。",
+    "usage": "aws cloudformation create-stack --stack-name 名前 --template-body file://テンプレート.yaml"
+  },
+  {
+    "name": "aws cloudformation update-stack",
+    "description": "CloudFormationスタックを更新します。",
+    "usage": "aws cloudformation update-stack --stack-name 名前 --template-body file://テンプレート.yaml"
+  },
+  {
+    "name": "aws cloudformation delete-stack",
+    "description": "CloudFormationスタックを削除します。",
+    "usage": "aws cloudformation delete-stack --stack-name 名前"
+  },
+  {
+    "name": "aws cloudformation describe-stacks",
+    "description": "スタックの詳細情報を表示します。",
+    "usage": "aws cloudformation describe-stacks --stack-name 名前"
+  },
+  {
+    "name": "aws dynamodb list-tables",
+    "description": "DynamoDBテーブルの一覧を表示します。",
+    "usage": "aws dynamodb list-tables"
+  },
+  {
+    "name": "aws dynamodb describe-table",
+    "description": "DynamoDBテーブルの詳細を表示します。",
+    "usage": "aws dynamodb describe-table --table-name テーブル名"
+  },
+  {
+    "name": "aws dynamodb scan",
+    "description": "DynamoDBテーブルをスキャンします。",
+    "usage": "aws dynamodb scan --table-name テーブル名"
+  },
+  {
+    "name": "aws dynamodb put-item",
+    "description": "DynamoDBテーブルにアイテムを追加します。",
+    "usage": "aws dynamodb put-item --table-name テーブル名 --item '{\"key\": {\"S\": \"value\"}}'"
+  },
+  {
+    "name": "aws sqs list-queues",
+    "description": "SQSキューの一覧を表示します。",
+    "usage": "aws sqs list-queues"
+  },
+  {
+    "name": "aws sqs send-message",
+    "description": "SQSキューにメッセージを送信します。",
+    "usage": "aws sqs send-message --queue-url URL --message-body \"メッセージ\""
+  },
+  {
+    "name": "aws sqs receive-message",
+    "description": "SQSキューからメッセージを受信します。",
+    "usage": "aws sqs receive-message --queue-url URL"
+  },
+  {
+    "name": "aws sns list-topics",
+    "description": "SNSトピックの一覧を表示します。",
+    "usage": "aws sns list-topics"
+  },
+  {
+    "name": "aws sns publish",
+    "description": "SNSトピックにメッセージを発行します。",
+    "usage": "aws sns publish --topic-arn ARN --message \"メッセージ\""
+  },
+  {
+    "name": "aws cloudwatch describe-alarms",
+    "description": "CloudWatchアラームの一覧を表示します。",
+    "usage": "aws cloudwatch describe-alarms [--alarm-names アラーム名]"
+  },
+  {
+    "name": "aws logs describe-log-groups",
+    "description": "CloudWatch Logsのロググループを表示します。",
+    "usage": "aws logs describe-log-groups"
+  },
+  {
+    "name": "aws logs tail",
+    "description": "CloudWatch Logsのログをリアルタイムで表示します。",
+    "usage": "aws logs tail ロググループ名 [--follow]"
+  },
+  {
+    "name": "aws ecr get-login-password",
+    "description": "ECRレジストリにログインするためのパスワードを取得します。",
+    "usage": "aws ecr get-login-password --region リージョン | docker login --username AWS --password-stdin レジストリURL"
+  },
+  {
+    "name": "aws ecr list-images",
+    "description": "ECRリポジトリ内のイメージを一覧表示します。",
+    "usage": "aws ecr list-images --repository-name リポジトリ名"
+  },
+  {
+    "name": "aws eks list-clusters",
+    "description": "EKSクラスターの一覧を表示します。",
+    "usage": "aws eks list-clusters"
+  },
+  {
+    "name": "aws eks update-kubeconfig",
+    "description": "kubeconfigファイルをEKSクラスター用に更新します。",
+    "usage": "aws eks update-kubeconfig --name クラスター名"
+  },
+  {
+    "name": "aws route53 list-hosted-zones",
+    "description": "Route 53のホストゾーンを一覧表示します。",
+    "usage": "aws route53 list-hosted-zones"
+  },
+  {
+    "name": "aws apigateway get-rest-apis",
+    "description": "API GatewayのREST APIを一覧表示します。",
+    "usage": "aws apigateway get-rest-apis"
+  },
+  {
+    "name": "aws sts get-caller-identity",
+    "description": "現在の認証情報の詳細を表示します。",
+    "usage": "aws sts get-caller-identity"
+  },
+  {
+    "name": "aws sts assume-role",
+    "description": "IAMロールを引き受けて一時的な認証情報を取得します。",
+    "usage": "aws sts assume-role --role-arn ロールARN --role-session-name セッション名"
+  },
+  {
+    "name": "aws organizations list-accounts",
+    "description": "AWS Organizations内のアカウントを一覧表示します。",
+    "usage": "aws organizations list-accounts"
+  },
+  {
+    "name": "aws cost-explorer get-cost-and-usage",
+    "description": "AWSの利用料金とコストを取得します。",
+    "usage": "aws ce get-cost-and-usage --time-period Start=YYYY-MM-DD,End=YYYY-MM-DD --granularity DAILY --metrics UnblendedCost"
   }
 ]
