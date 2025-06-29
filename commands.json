@@ -3,7 +3,18 @@
     "category": "Linux",
     "name": "ls",
     "description": "ディレクトリの内容を一覧表示します。",
-    "usage": "ls [オプション] [ファイル]"
+    "usage": "ls [オプション] [ファイル]",
+    "builder": {
+      "params": ["path"],
+      "options": [
+        {"name": "-l", "type": "flag", "description": "詳細情報を表示"},
+        {"name": "-a", "type": "flag", "description": "隠しファイルも表示"},
+        {"name": "-h", "type": "flag", "description": "サイズを人間が読みやすい形式で表示"},
+        {"name": "-R", "type": "flag", "description": "サブディレクトリを再帰的に表示"},
+        {"name": "-t", "type": "flag", "description": "更新時刻でソート"},
+        {"name": "-S", "type": "flag", "description": "ファイルサイズでソート"}
+      ]
+    }
   },
   {
     "category": "Linux",
@@ -33,7 +44,18 @@
     "category": "AWS S3",
     "name": "aws s3 cp",
     "description": "ファイルをS3にコピーまたはS3からコピーします。",
-    "usage": "aws s3 cp ソース 宛先 [--recursive]"
+    "usage": "aws s3 cp ソース 宛先 [--recursive]",
+    "builder": {
+      "params": ["source", "destination"],
+      "options": [
+        {"name": "--recursive", "type": "flag", "description": "ディレクトリを再帰的にコピー"},
+        {"name": "--exclude", "type": "text", "description": "除外パターン（例: *.tmp）"},
+        {"name": "--include", "type": "text", "description": "含めるパターン（例: *.jpg）"},
+        {"name": "--acl", "type": "select", "choices": ["private", "public-read", "public-read-write", "authenticated-read", "aws-exec-read", "bucket-owner-read", "bucket-owner-full-control"], "description": "アクセスコントロールリスト"},
+        {"name": "--storage-class", "type": "select", "choices": ["STANDARD", "REDUCED_REDUNDANCY", "STANDARD_IA", "ONEZONE_IA", "INTELLIGENT_TIERING", "GLACIER", "DEEP_ARCHIVE"], "description": "ストレージクラス"},
+        {"name": "--dryrun", "type": "flag", "description": "実際にはコピーせずに実行内容を確認"}
+      ]
+    }
   },
   {
     "category": "AWS S3",
@@ -63,7 +85,17 @@
     "category": "AWS EC2",
     "name": "aws ec2 describe-instances",
     "description": "EC2インスタンスの情報を表示します。",
-    "usage": "aws ec2 describe-instances [--instance-ids i-xxxxx]"
+    "usage": "aws ec2 describe-instances [--instance-ids i-xxxxx]",
+    "builder": {
+      "params": [],
+      "options": [
+        {"name": "--instance-ids", "type": "text", "description": "インスタンスID（複数指定可、スペース区切り）"},
+        {"name": "--filters Name=instance-state-name,Values=", "type": "select", "choices": ["running", "stopped", "terminated", "pending", "shutting-down", "stopping"], "description": "インスタンスの状態でフィルター"},
+        {"name": "--filters Name=tag:Name,Values=", "type": "text", "description": "Nameタグでフィルター"},
+        {"name": "--query", "type": "text", "description": "JMESPathクエリ（例: Reservations[*].Instances[*].InstanceId）"},
+        {"name": "--output", "type": "select", "choices": ["json", "text", "table", "yaml"], "description": "出力形式"}
+      ]
+    }
   },
   {
     "category": "AWS EC2",
@@ -123,7 +155,17 @@
     "category": "AWS Lambda",
     "name": "aws lambda invoke",
     "description": "Lambda関数を実行します。",
-    "usage": "aws lambda invoke --function-name 関数名 出力ファイル"
+    "usage": "aws lambda invoke --function-name 関数名 出力ファイル",
+    "builder": {
+      "params": ["function-name", "output-file"],
+      "options": [
+        {"name": "--invocation-type", "type": "select", "choices": ["RequestResponse", "Event", "DryRun"], "description": "実行タイプ"},
+        {"name": "--log-type", "type": "select", "choices": ["None", "Tail"], "description": "ログタイプ"},
+        {"name": "--payload", "type": "text", "description": "入力データ（JSON形式）"},
+        {"name": "--qualifier", "type": "text", "description": "バージョンまたはエイリアス"},
+        {"name": "--cli-binary-format", "type": "select", "choices": ["raw-in-base64-out", "base64"], "description": "CLIバイナリフォーマット"}
+      ]
+    }
   },
   {
     "category": "AWS Lambda",
@@ -352,5 +394,40 @@
     "name": "aws cost-explorer get-cost-and-usage",
     "description": "AWSの利用料金とコストを取得します。",
     "usage": "aws ce get-cost-and-usage --time-period Start=YYYY-MM-DD,End=YYYY-MM-DD --granularity DAILY --metrics UnblendedCost"
+  },
+  {
+    "category": "Git",
+    "name": "git log",
+    "description": "コミット履歴を表示します。",
+    "usage": "git log [オプション]",
+    "builder": {
+      "params": [],
+      "options": [
+        {"name": "--oneline", "type": "flag", "description": "各コミットを1行で表示"},
+        {"name": "--graph", "type": "flag", "description": "ブランチグラフを表示"},
+        {"name": "--all", "type": "flag", "description": "すべてのブランチを表示"},
+        {"name": "-n", "type": "text", "description": "表示するコミット数（例: 10）"},
+        {"name": "--since", "type": "text", "description": "指定日以降のコミット（例: 2023-01-01）"},
+        {"name": "--author", "type": "text", "description": "著者でフィルター"},
+        {"name": "--grep", "type": "text", "description": "コミットメッセージで検索"},
+        {"name": "--format", "type": "select", "choices": ["oneline", "short", "medium", "full", "fuller", "email", "raw"], "description": "出力フォーマット"}
+      ]
+    }
+  },
+  {
+    "category": "Git",
+    "name": "git clone",
+    "description": "リポジトリをクローンします。",
+    "usage": "git clone [オプション] リポジトリURL [ディレクトリ]",
+    "builder": {
+      "params": ["repository-url", "directory"],
+      "options": [
+        {"name": "--branch", "type": "text", "description": "特定のブランチをクローン"},
+        {"name": "--depth", "type": "text", "description": "履歴の深さを制限（例: 1）"},
+        {"name": "--single-branch", "type": "flag", "description": "単一ブランチのみクローン"},
+        {"name": "--recurse-submodules", "type": "flag", "description": "サブモジュールも再帰的にクローン"},
+        {"name": "--quiet", "type": "flag", "description": "進捗を表示しない"}
+      ]
+    }
   }
 ]
